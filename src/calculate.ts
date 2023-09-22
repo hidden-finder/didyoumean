@@ -1,8 +1,9 @@
+const patternEqualityArray = new Uint32Array(65536)
+
 export const calculateMyersDistanceShort = (text: string, pattern: string): number => {
   const textLength = text.length
   const patternLength = pattern.length
   const lastSetBit = 1 << (textLength - 1)
-  const patternEqualityArray = new Uint32Array(65536)
 
   let positiveVector = -1
   let negativeVector = 0
@@ -32,6 +33,10 @@ export const calculateMyersDistanceShort = (text: string, pattern: string): numb
     negativeVector &= mixedVector
   }
 
+  for (let i = textLength - 1; i >= 0; i--) {
+    patternEqualityArray[text.charCodeAt(i)] = 0
+  }
+
   return point
 }
 
@@ -40,16 +45,18 @@ export const calculateMyersDistanceLong = (text: string, pattern: string): numbe
   const patternLength = pattern.length
   const matchHighBits = new Array<number>(Math.ceil(textLength / 32))
   const mismatchHighBits = new Array<number>(Math.ceil(textLength / 32))
-  const patternEqualityArray = new Uint32Array(65536)
 
   for (let i = 0; i < matchHighBits.length; i++) {
     matchHighBits[i] = 0
     mismatchHighBits[i] = -1
   }
 
+  let negativeVector = 0
+  let positiveVector = -1
+  let point = patternLength
+  let patternHighBit: number, textHighBit: number, mixedHighBit: number
+
   for (let j = 0; j < Math.ceil(patternLength / 32); j++) {
-    let negativeVector = 0
-    let positiveVector = -1
     const start = j * 32
     const vectorLength = Math.min(32, patternLength - start) + start
 
@@ -59,19 +66,20 @@ export const calculateMyersDistanceLong = (text: string, pattern: string): numbe
 
     for (let i = 0; i < textLength; i++) {
       const equality = patternEqualityArray[text.charCodeAt(i)]
-      const patternBit = (matchHighBits[(i / 32) | 0] >>> i) & 1
-      const textBit = (mismatchHighBits[(i / 32) | 0] >>> i) & 1
+      const index = (i / 32) | 0
+      const patternBit = (matchHighBits[index] >>> i) & 1
+      const textBit = (mismatchHighBits[index] >>> i) & 1
       const mixedVector = equality | negativeVector
 
-      const mixedHighBit = ((((equality | textBit) & positiveVector) + positiveVector) ^ positiveVector) | equality | textBit
-      let patternHighBit = negativeVector | ~(mixedHighBit | positiveVector)
-      let textHighBit = positiveVector & mixedHighBit
+      mixedHighBit = ((((equality | textBit) & positiveVector) + positiveVector) ^ positiveVector) | equality | textBit
+      patternHighBit = negativeVector | ~(mixedHighBit | positiveVector)
+      textHighBit = positiveVector & mixedHighBit
 
       if ((patternHighBit >>> 31) ^ patternBit) {
-        matchHighBits[(i / 32) | 0] ^= 1 << i
+        matchHighBits[index] ^= 1 << i
       }
       if ((textHighBit >>> 31) ^ textBit) {
-        mismatchHighBits[(i / 32) | 0] ^= 1 << i
+        mismatchHighBits[index] ^= 1 << i
       }
 
       patternHighBit = (patternHighBit << 1) | patternBit
@@ -85,8 +93,6 @@ export const calculateMyersDistanceLong = (text: string, pattern: string): numbe
     }
   }
 
-  let negativeVector = 0
-  let positiveVector = -1
   const start = Math.ceil(patternLength / 32) * 32
   const vectorLength = Math.min(32, patternLength - start) + start
 
@@ -94,31 +100,35 @@ export const calculateMyersDistanceLong = (text: string, pattern: string): numbe
     patternEqualityArray[pattern.charCodeAt(k)] |= 1 << k
   }
 
-  let point = patternLength
   for (let i = 0; i < textLength; i++) {
     const equality = patternEqualityArray[text.charCodeAt(i)]
-    const patternBit = (matchHighBits[(i / 32) | 0] >>> i) & 1
-    const textBit = (mismatchHighBits[(i / 32) | 0] >>> i) & 1
+    const index = (i / 32) | 0
+    const patternBit = (matchHighBits[index] >>> i) & 1
+    const textBit = (mismatchHighBits[index] >>> i) & 1
     const mixedVector = equality | negativeVector
 
-    const mixedHighBit = ((((equality | textBit) & positiveVector) + positiveVector) ^ positiveVector) | equality | textBit
-    let patternHighBit = negativeVector | ~(mixedHighBit | positiveVector)
-    let textHighBit = positiveVector & mixedHighBit
+    mixedHighBit = ((((equality | textBit) & positiveVector) + positiveVector) ^ positiveVector) | equality | textBit
+    patternHighBit = negativeVector | ~(mixedHighBit | positiveVector)
+    textHighBit = positiveVector & mixedHighBit
 
     point += (patternHighBit >>> (patternLength - 1)) & 1
     point -= (textHighBit >>> (patternLength - 1)) & 1
 
     if ((patternHighBit >>> 31) ^ patternBit) {
-      matchHighBits[(i / 32) | 0] ^= 1 << i
+      matchHighBits[index] ^= 1 << i
     }
     if ((textHighBit >>> 31) ^ textBit) {
-      mismatchHighBits[(i / 32) | 0] ^= 1 << i
+      mismatchHighBits[index] ^= 1 << i
     }
 
     patternHighBit = (patternHighBit << 1) | patternBit
     textHighBit = (textHighBit << 1) | textBit
     positiveVector = textHighBit | ~(mixedVector | patternHighBit)
     negativeVector = patternHighBit & mixedVector
+  }
+
+  for (let k = start; k < vectorLength; k++) {
+    patternEqualityArray[pattern.charCodeAt(k)] = 0
   }
 
   return point

@@ -12,11 +12,10 @@ import { calculateMyersDistanceShort, calculateMyersDistanceLong } from './calcu
  * @returns {number} The Levenshtein distance between the two input strings.
  */
 export const calculateDistance = (text: string, pattern: string): number => {
-  if (text.length < pattern.length) [pattern, text] = [text, pattern]
-
   if (pattern.length === 0) return text.length
-
   if (text.length === 0) return pattern.length
+
+  if (text.length < pattern.length) [text, pattern] = [pattern, text]
 
   if (text.length <= 32) return calculateMyersDistanceShort(text, pattern)
 

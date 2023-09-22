@@ -1,6 +1,6 @@
 {
   "name": "@hidden-finder/didyoumean",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple and lightweight matching input to a list of potential matches using the Levenshtein distance algorithm.",
   "type": "module",
   "source": "./src/index.ts",
