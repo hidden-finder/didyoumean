@@ -1,0 +1,59 @@
+{
+  "name": "@hidden-finder/didyoumean",
+  "version": "1.0.0",
+  "description": "A simple and lightweight matching input to a list of potential matches using the Levenshtein distance algorithm.",
+  "type": "module",
+  "source": "./src/index.ts",
+  "main": "./dist/index.cjs",
+  "umd:main": "./dist/index.umd.cjs",
+  "module": "./dist/index.js",
+  "exports": {
+    "require": "./dist/index.cjs",
+    "default": "./dist/index.modern.js"
+  },
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "prepublish": "npm run lint",
+    "lint": "eslint \"./src/**/*.ts\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hidden-finder/didyoumean.git"
+  },
+  "keywords": [
+    "compare",
+    "comparison",
+    "didyoumean",
+    "diff",
+    "difference",
+    "distance",
+    "edit",
+    "find",
+    "fuzzy",
+    "leven",
+    "levenshtein",
+    "match",
+    "matching",
+    "similar",
+    "similarity",
+    "string"
+  ],
+  "author": "hidden-finder",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hidden-finder/didyoumean/issues"
+  },
+  "homepage": "https://github.com/hidden-finder/didyoumean",
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "eslint": "^8.0.1",
+    "eslint-config-standard-with-typescript": "^34.0.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-n": "^15.0.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "typescript": "^4.9.0"
+  }
+}
