@@ -1,10 +1,18 @@
 # @hidden-finder/didyoumean
 
-A simple and lightweight matching input to a list of potential matches using the [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance) algorithm.
+## Introduction
 
-## Install
+This library provides functions for comparing and calculating the similarity between two strings using various methods. It includes the following functions:
 
-Install the dependency
+- `calculateDistance`: Calculates the edit distance (Levenshtein distance) between two strings.
+- `levenshteinSimilarity`: Calculates the Levenshtein similarity between two strings.
+- `bigramSimilarity`: Calculates the bigram similarity between two strings.
+- `similarity`: Calculates a combined similarity score using Levenshtein and bigram similarities.
+- `didyoumean`: Finds the most similar pattern from an array of patterns to a given input string.
+
+## Installation
+
+To use this library in your project, you can install it via:
 
 ```shell
 npm install @hidden-finder/didyoumean
@@ -15,77 +23,87 @@ yarn add @hidden-finder/didyoumean
 ## Overview
 
 ```ts
-import { calculateDistance, similarity, didyoumean } from '@hidden-finder/didyoumean'
+import { calculateDistance, levenshteinSimilarity, bigramSimilarity, similarity, didyoumean } from '@hidden-finder/didyoumean'
 ```
 
-- [Calculate Distance](#calculateDistance)
-- [Similarity](#similarity)
-- [Didyoumean](#didyoumean)
+## Functions
 
-## API
+### `calculateDistance`
 
-### calculateDistance
-
-The `calculateDistance` function calculates the Levenshtein distance between two input strings. The Levenshtein distance measures the similarity between two strings by determining the minimum number of single-character edits (insertions, deletions, or substitutions) needed to transform one string into the other.
-
-#### Parameters
+**Parameters:**
 
 - `text` (string): The first input string.
 - `pattern` (string): The second input string.
 
-#### Returns
+**Returns:** `number` - The edit distance between the two strings.
 
-- (number): The Levenshtein distance between the two input strings.
+**Example:**
 
 ```ts
-import { calculateDistance } from '@hidden-finder/didyoumean'
-
-const calculate = calculateDistance('hellow', 'hello')
-const calculate2 = calculateDistance('hellow', 'world')
-console.log(calculate, calculate2) // 1, 5
+const distance = calculateDistance('kitten', 'sitting')
 ```
 
-### similarity
+### `levenshteinSimilarity`
 
-The `similarity` function calculates the normalized Levenshtein similarity score between two input strings. This metric measures the similarity between two strings as a value between 0 and 1. A score of 0 indicates no similarity, while a score of 1 indicates identical strings.
-
-#### Parameters
+**Parameters:**
 
 - `text` (string): The first input string.
 - `pattern` (string): The second input string.
 
-#### Returns
+**Returns:** `number` - The Levenshtein similarity between the two strings (a value between 0 and 1).
 
-- (number): The Levenshtein similarity score between the two input strings, normalized to a value between 0 and 1.
+Example:
 
 ```ts
-import { similarity } from '@hidden-finder/didyoumean'
-
-const similar = similarity('hellow', 'hello')
-const similar2 = similarity('hellow', 'world')
-console.log(similar, similar2) // 0.83, 0.16
+const similarity = levenshteinSimilarity('kitten', 'sitting')
 ```
 
-### didyoumean
+### `bigramSimilarity`
 
-The `didyoumean` function is used to find the closest matching pattern from an array of patterns to a given input string. It does this by calculating the Levenshtein distance between the input string and each pattern in the provided array and returning the pattern with the smallest Levenshtein distance.
+**Parameters:**
 
-#### Parameters
+- `text` (string): The first input string.
+- `pattern` (string): The second input string.
 
-- `string` (string): The input string for which you want to find the closest matching pattern.
-- `patterns` (string[]): An array of patterns to compare against the input string.
+**Returns:** `number` - The bigram similarity between the two strings (a value between 0 and 1).
 
-#### Returns
-
-- (string): The closest matching pattern from the provided array.
+Example:
 
 ```ts
-import { didyoumean } from '@hidden-finder/didyoumean'
+const similarity = bigramSimilarity('kitten', 'sitting')
+```
 
-const mean = didyoumean('hellow', ['hello', 'world'])
-console.log(mean) // hello
+### `similarity`
+
+**Parameters:**
+
+- `text` (string): The first input string.
+- `pattern` (string): The second input string.
+
+**Returns:** `number` - The combined similarity score between the two strings (a value between 0 and 1).
+
+Example:
+
+```ts
+const similarity = similarity('kitten', 'sitting')
+```
+
+### `didyoumean`
+
+**Parameters:**
+
+- `text` (string): The input string to find a similar pattern for.
+- `patterns` (string[]): An array of candidate patterns.
+
+**Returns:** `string` - The most similar pattern from the array.
+
+Example:
+
+```ts
+const patterns = ['banana', 'apple', 'cherry', 'grape']
+const similarPattern = didyoumean('aple', patterns)
 ```
 
 ## License
 
-[MIT License](LICENSE)
+This library is provided under the [MIT License](LICENSE)

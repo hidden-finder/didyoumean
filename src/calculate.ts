@@ -21,10 +21,10 @@ export const calculateMyersDistanceShort = (text: string, pattern: string): numb
     negativeVector |= ~(equality | positiveVector)
     positiveVector &= equality
 
-    if (negativeVector & lastSetBit) {
+    if ((negativeVector & lastSetBit) !== 0) {
       point++
     }
-    if (positiveVector & lastSetBit) {
+    if ((positiveVector & lastSetBit) !== 0) {
       point--
     }
 
@@ -75,10 +75,10 @@ export const calculateMyersDistanceLong = (text: string, pattern: string): numbe
       patternHighBit = negativeVector | ~(mixedHighBit | positiveVector)
       textHighBit = positiveVector & mixedHighBit
 
-      if ((patternHighBit >>> 31) ^ patternBit) {
+      if (((patternHighBit >>> 31) ^ patternBit) !== 0) {
         matchHighBits[index] ^= 1 << i
       }
-      if ((textHighBit >>> 31) ^ textBit) {
+      if (((textHighBit >>> 31) ^ textBit) !== 0) {
         mismatchHighBits[index] ^= 1 << i
       }
 
@@ -114,10 +114,10 @@ export const calculateMyersDistanceLong = (text: string, pattern: string): numbe
     point += (patternHighBit >>> (patternLength - 1)) & 1
     point -= (textHighBit >>> (patternLength - 1)) & 1
 
-    if ((patternHighBit >>> 31) ^ patternBit) {
+    if (((patternHighBit >>> 31) ^ patternBit) !== 0) {
       matchHighBits[index] ^= 1 << i
     }
-    if ((textHighBit >>> 31) ^ textBit) {
+    if (((textHighBit >>> 31) ^ textBit) !== 0) {
       mismatchHighBits[index] ^= 1 << i
     }
 

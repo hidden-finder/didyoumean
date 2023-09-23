@@ -11,6 +11,6 @@
     "strict": true,
     "target": "esnext"
   },
-  "include": ["src/**/*.ts", "__test__/**/*.test.ts"],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]
 }
